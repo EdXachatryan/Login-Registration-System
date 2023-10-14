@@ -1,7 +1,8 @@
 #include "Entity.h"
+#include <fstream>
 
 std::ostream& operator<< (std::ostream& os, const Entity& ent) {
-	os << ent.login << ":" << ent.password;
+	os << ent.login << " : " << ent.password;
 	return os;
 }
 
@@ -16,7 +17,7 @@ std::istream& operator>> (std::istream& os, Entity& ent) {
 }
 
 Records::Records() {
-	
+
 	try
 	{
 		deserialize();
@@ -39,7 +40,7 @@ Records::~Records() {
 }
 
 bool Records::addEntity(Entity ent) {
-	
+
 	if (entities.find(ent.login) != entities.end()) {
 		return false;
 	}
@@ -58,6 +59,32 @@ Entity Records::getEntity(string loginName) {
 
 void Records::serialize() {
 
+	std::ofstream outFile { filename };
 
+	if (outFile.is_open()) {
 
+		for (auto ent : entities) {
+			outFile << ent.second;
+			outFile << std::endl;
+		}
+	}
+	else {
+		std::cout << "Failed to open " << filename << "\n";
+	}
+}
+
+void Records::deserialize() {
+	std::ifstream inFile{ filename };
+	string line;
+	Entity ent;
+	if (inFile.is_open()) {
+
+		while (inFile >> ent) {
+			entities.insert({ ent.login, ent });
+			std::getline(inFile, line);
+		}
+	}
+	else {
+		std::cout << "Failed to open " << filename << "\n";
+	}
 }

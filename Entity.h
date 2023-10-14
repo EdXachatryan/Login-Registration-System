@@ -21,6 +21,7 @@ struct Entity {
 
 class Records {
 
+public:
 	Records();
 	~Records();
 
@@ -32,6 +33,8 @@ private:
 	void deserialize();
 
 	std::map<string, Entity> entities;
+
+	std::string filename { "records.txt" };
 };
 
 #endif // !ENTITY_H
